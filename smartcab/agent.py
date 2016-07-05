@@ -6,7 +6,7 @@ from simulator import Simulator
 class QLearner(object):
     """TODO: Fill this later."""
 
-    discount_factor = 0.3
+    discount_factor = 0.8
 
     def __init__(self, state_space, action_space):
         self.state_space = state_space
@@ -46,6 +46,7 @@ class QLearner(object):
         
         tmp = reward + self.discount_factor * max(q_prime)
         self.qtable[qtable_key] = learning_rate * tmp + (1 - learning_rate) * self.qtable[qtable_key]
+        #print "Q-Learner Update:", qtable_key, self.qtable[qtable_key]
 
     def tuplize(self, state, action):
         return_value = [state[x] for x in sorted(state)]
@@ -60,7 +61,6 @@ class LearningAgent(Agent):
         'next_waypoint': allowed_actions, 
         'oncoming': allowed_actions,
         'left': allowed_actions,
-        'right': allowed_actions,
         'light': ['green', 'red']
     }
 
@@ -95,7 +95,6 @@ class LearningAgent(Agent):
             'next_waypoint': self.next_waypoint, 
             'oncoming': inputs['oncoming'],
             'left': inputs['left'],
-            'right': inputs['right'],
             'light': inputs['light']
         }
         
@@ -110,7 +109,7 @@ class LearningAgent(Agent):
 
         # Learn policy based on state, action, reward
         if self.prev_state is not None:
-            self.qlearner.update(self.prev_state, action, reward, self.state, 1./t)
+            self.qlearner.update(self.state, action, reward, self.prev_state, 1./t)
         
         self.prev_state = self.state
 
@@ -129,7 +128,7 @@ def run():
     # NOTE: You can set enforce_deadline=False while debugging to allow longer trials
 
     # Now simulate it
-    sim = Simulator(e, update_delay=0.001, display=True)  # create simulator (uses pygame when display=True, if available)
+    sim = Simulator(e, update_delay=0.05, display=True)  # create simulator (uses pygame when display=True, if available)
     # NOTE: To speed up simulation, reduce update_delay and/or set display=False
 
     sim.run(n_trials=100)  # run for a specified number of trials
