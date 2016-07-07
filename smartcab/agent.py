@@ -136,7 +136,7 @@ class LearningAgent(Agent):
         #print "LearningAgent.update(): deadline = {}, inputs = {}, action = {}, reward = {}".format(deadline, inputs, action, reward)  # [debug]
 
 
-def run(epsilon = 0.8, gamma = 0.8, alpha_prime=1.0, update_delay=0.05, display=True):
+def run(epsilon = 0.8, gamma = 0.4, alpha_prime=1.0, update_delay=0.05, display=True):
     """Run the agent for a finite number of trials."""
 
     # Set up environment and agent
