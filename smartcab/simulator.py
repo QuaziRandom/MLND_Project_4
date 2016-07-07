@@ -2,8 +2,6 @@ import os
 import time
 import random
 import importlib
-import pandas as pd
-import numpy as np
 
 class Simulator(object):
     """Simulates agents in a dynamic smartcab environment.
@@ -63,19 +61,8 @@ class Simulator(object):
 
     def run(self, n_trials=1):
         self.quit = False
-
-        # Create an empty DataFrame
-        stats = pd.DataFrame(
-            columns=[
-                'dest_reached',
-                'cumulative_reward', 
-                'n_penalties', 
-                'deadline', 
-                'time_left']
-                )
-
         for trial in xrange(n_trials):
-            #print "Simulator.run(): Trial {}".format(trial)  # [debug]
+            print "Simulator.run(): Trial {}".format(trial)  # [debug]
             self.env.reset()
             self.current_time = 0.0
             self.last_updated = 0.0
@@ -113,24 +100,10 @@ class Simulator(object):
                     self.quit = True
                 finally:
                     if self.quit or self.env.done:
-                        cumulative_reward = self.env.primary_agent.cumulative_reward
-                        n_penalties = self.env.primary_agent.n_penalties
-                        primary_agent_state = self.env.agent_states[self.env.primary_agent]
-                        time_left = primary_agent_state['deadline']
-                        deadline = time_left + self.env.t
-                        if primary_agent_state['location'] != primary_agent_state['destination']:
-                            dest_reached = False
-                            time_left = -1
-                        else:
-                            dest_reached = True
-                        
-                        # Fill DataFrame indexed by trial number
-                        stats.loc[trial] = (dest_reached, cumulative_reward, n_penalties, deadline, time_left)
                         break
 
             if self.quit:
                 break
-        return stats
 
     def render(self):
         # Clear screen
